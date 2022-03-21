@@ -247,6 +247,7 @@ task('full-deploy', 'deploys the entire Lens Protocol').setAction(async ({}, hre
     'lensHub impl:': lensHubImpl.address,
     'publishing logic lib': publishingLogic.address,
     'interaction logic lib': interactionLogic.address,
+    'profile token uri logic lib': profileTokenURILogic.address,
     'follow NFT impl': followNFTImplAddress,
     'collect NFT impl': collectNFTImplAddress,
     currency: currency.address,
