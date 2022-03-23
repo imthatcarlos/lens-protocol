@@ -22,7 +22,7 @@ task('whitelist-sponsor-module', 'whitelists the new reference module SponsorMod
 
   const hubProxyAddress = addrs['lensHub proxy'];
 
-  // AFTER running `npx hardhat deploy --network docker` in other repo
+  // AFTER running `yarn deploy:docker` in other repo
   const SPONSOR_MODULE_ADDRESS = '';
   if (!SPONSOR_MODULE_ADDRESS) throw new Error ('need to define SPONSOR_MODULE_ADDRESS');
 
