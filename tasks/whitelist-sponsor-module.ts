@@ -23,7 +23,7 @@ task('whitelist-sponsor-module', 'whitelists the new reference module SponsorMod
   const hubProxyAddress = addrs['lensHub proxy'];
 
   // AFTER running `yarn deploy:docker` in other repo
-  const SPONSOR_MODULE_ADDRESS = '';
+  const SPONSOR_MODULE_ADDRESS = addrs['SponsorModule'];
   if (!SPONSOR_MODULE_ADDRESS) throw new Error ('need to define SPONSOR_MODULE_ADDRESS');
 
   // Whitelist the reference module
