@@ -167,6 +167,26 @@ library PublishingLogic {
     }
 
     /**
+     * @dev updates the `contentURI` for a given `profileId` and `post`
+     */
+    function updatePost(
+        uint256 profileId,
+        uint256 pubId,
+        string memory contentURI,
+        mapping(uint256 => mapping(uint256 => DataTypes.PublicationStruct))
+            storage _pubByIdByProfile
+    ) external {
+        _pubByIdByProfile[profileId][pubId].contentURI = contentURI;
+
+        emit Events.PostUpdated(
+          profileId,
+          pubId,
+          contentURI,
+          block.timestamp
+        );
+    }
+
+    /**
      * @notice Creates a comment publication mapped to the given profile.
      *
      * @dev This function is unique in that it requires many variables, so, unlike the other publishing functions,

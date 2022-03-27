@@ -263,6 +263,11 @@ interface ILensHub {
     function collectWithSig(DataTypes.CollectWithSigData calldata vars) external;
 
     /**
+     * @notice Updates a given publication for a given profile via signature
+     */
+    function updatePostWithSig(uint256 profileId, uint256 pubId, DataTypes.EIP712Signature calldata sig) external;
+
+    /**
      * @dev Helper function to emit a detailed followNFT transfer event from the hub, to be consumed by frontends to track
      * followNFT transfers.
      *

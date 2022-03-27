@@ -508,6 +508,34 @@ contract LensHub is ILensHub, LensNFTBase, VersionedInitializable, LensMultiStat
         _clearHandleHash(tokenId);
     }
 
+    /// @inheritdoc ILensHub
+    function updatePostWithSig(uint256 profileId, uint256 pubId, DataTypes.EIP712Signature calldata sig)
+        external
+        override
+        whenPublishingEnabled
+    {
+        // sanity check
+        if (_profileById[profileId].pubCount < pubId) revert Errors.PublicationDoesNotExist();
+
+        address owner = ownerOf(profileId);
+
+        _validateRecoveredAddress(
+            _calculateDigest(
+                keccak256(
+                    abi.encode(UPDATE_POST_WITH_SIG_TYPEHASH, profileId, pubId, sigNonces[owner]++, sig.deadline)
+                )
+            ),
+            owner,
+            sig
+        );
+
+        _updatePost(
+            profileId,
+            pubId,
+            "" // just set the contentURI to empty string
+        );
+    }
+
     /// ***************************************
     /// *****PROFILE INTERACTION FUNCTIONS*****
     /// ***************************************
@@ -872,6 +900,19 @@ contract LensHub is ILensHub, LensNFTBase, VersionedInitializable, LensMultiStat
             _collectModuleWhitelisted,
             _referenceModuleWhitelisted
         );
+    }
+
+    function _updatePost(
+        uint256 profileId,
+        uint256 pubId,
+        string memory contentURI
+    ) internal {
+      PublishingLogic.updatePost(
+          profileId,
+          pubId,
+          contentURI,
+          _pubByIdByProfile
+      );
     }
 
     function _setDefaultProfile(address wallet, uint256 profileId) internal {

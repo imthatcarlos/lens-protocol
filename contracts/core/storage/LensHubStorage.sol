@@ -49,6 +49,8 @@ contract LensHubStorage {
         keccak256(
             'CollectWithSig(uint256 profileId,uint256 pubId,bytes data,uint256 nonce,uint256 deadline)'
         );
+    bytes32 internal constant UPDATE_POST_WITH_SIG_TYPEHASH =
+        keccak256('UpdatePostWithSig(uint256 profileId,uint256 pubId,uint256 nonce,uint256 deadline)');
 
     mapping(address => bool) internal _profileCreatorWhitelisted;
     mapping(address => bool) internal _followModuleWhitelisted;
