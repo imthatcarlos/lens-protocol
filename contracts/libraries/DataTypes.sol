@@ -223,6 +223,21 @@ library DataTypes {
     }
 
     /**
+     * @notice A struct containing the parameters required to update a post with the the `updatePostWithSig()` function. Parameters are
+     * limited to just the `profileId`, the `pubId` and the `contentURI`, with an added EIP712Signature.
+     *
+     * @param profileId The token ID of the profile to publish to.
+     * @param contentURI The URI to set for this new publication.
+     * @param sig The EIP712Signature struct containing the profile owner's signature.
+     */
+    struct UpdatePostWithSig {
+        uint256 profileId;
+        uint256 pubId;
+        string contentURI;
+        EIP712Signature sig;
+    }
+
+    /**
      * @notice A struct containing the parameters required for the `comment()` function.
      *
      * @param profileId The token ID of the profile to publish to.

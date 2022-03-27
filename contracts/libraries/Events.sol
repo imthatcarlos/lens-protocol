@@ -215,6 +215,13 @@ library Events {
         uint256 timestamp
     );
 
+    event PostUpdated(
+        uint256 indexed profileId,
+        uint256 indexed pubId,
+        string contentURI,
+        uint256 timestamp
+    );
+
     /**
      * @dev Emitted when a "comment" is published.
      *
