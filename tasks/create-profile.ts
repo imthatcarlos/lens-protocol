@@ -15,7 +15,7 @@ task('create-profile', 'creates a profile').setAction(async ({}, hre) => {
     handle: '0xcarlos',
     imageURI: 'ipfs://QmZFnUm3bjSyEPrvxEa3fR9eUxnkfQeLmPTzDhAmCWtbMZ/3958.png',
     followModule: ZERO_ADDRESS,
-    followModuleData: [],
+    followModuleInitData: [],
     followNFTURI: 'ipfs://QmWGAFtzyzB6A6gYMnb6838hysHuT2rcV8B98Gmj4T4pyY/3958.json',
   };
 

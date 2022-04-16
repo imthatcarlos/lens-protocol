@@ -15,9 +15,9 @@ task('post', 'publishes a post').setAction(async ({}, hre) => {
     profileId: 1,
     contentURI: 'ipfs://QmWGAFtzyzB6A6gYMnb6838hysHuT2rcV8B98Gmj4T4pyY/3958.json',
     collectModule: emptyCollectModuleAddr,
-    collectModuleData: [],
+    collectModuleInitData: [],
     referenceModule: ZERO_ADDRESS,
-    referenceModuleData: [],
+    referenceModuleInitData: [],
   };
 
   await waitForTx(lensHub.connect(user).post(inputStruct));
