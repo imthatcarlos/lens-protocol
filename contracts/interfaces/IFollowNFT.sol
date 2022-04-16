@@ -30,8 +30,10 @@ interface IFollowNFT {
      * upon follow.
      *
      * @param to The address to mint the NFT to.
+     *
+     * @return uint256 An interger representing the minted token ID.
      */
-    function mint(address to) external;
+    function mint(address to) external returns (uint256);
 
     /**
      * @notice Delegates the caller's governance power to the given delegatee address.
@@ -58,6 +60,8 @@ interface IFollowNFT {
      *
      * @param user The user to query governance power for.
      * @param blockNumber The block number to query the user's governance power at.
+     *
+     * @return uint256 The power of the given user at the given block number.
      */
     function getPowerByBlockNumber(address user, uint256 blockNumber) external returns (uint256);
 
@@ -66,7 +70,8 @@ interface IFollowNFT {
      * current available voting power at a given block.
      *
      * @param blockNumber The block number to query the delegated supply at.
+     *
+     * @return uint256 The delegated supply at the given block number.
      */
     function getDelegatedSupplyByBlockNumber(uint256 blockNumber) external returns (uint256);
-
 }

@@ -9,7 +9,16 @@ import {Events} from '../../libraries/Events.sol';
 import {ERC721Time} from './ERC721Time.sol';
 import {ERC721Enumerable} from './ERC721Enumerable.sol';
 
-abstract contract LensNFTBase is ILensNFTBase, ERC721Enumerable {
+/**
+ * @title LensNFTBase
+ * @author Lens Protocol
+ *
+ * @notice This is an abstract base contract to be inherited by other Lens Protocol NFTs, it includes
+ * the slightly modified ERC721Enumerable, which itself inherits from the ERC721Time-- which adds an
+ * internal operator approval setter, stores the mint timestamp for each token, and replaces the
+ * constructor with an initializer.
+ */
+abstract contract LensNFTBase is ERC721Enumerable, ILensNFTBase {
     bytes32 internal constant EIP712_REVISION_HASH = keccak256('1');
     bytes32 internal constant PERMIT_TYPEHASH =
         keccak256('Permit(address spender,uint256 tokenId,uint256 nonce,uint256 deadline)');
@@ -49,15 +58,23 @@ abstract contract LensNFTBase is ILensNFTBase, ERC721Enumerable {
     ) external override {
         if (spender == address(0)) revert Errors.ZeroSpender();
         address owner = ownerOf(tokenId);
-        _validateRecoveredAddress(
-            _calculateDigest(
-                keccak256(
-                    abi.encode(PERMIT_TYPEHASH, spender, tokenId, sigNonces[owner]++, sig.deadline)
-                )
-            ),
-            owner,
-            sig
-        );
+        unchecked {
+            _validateRecoveredAddress(
+                _calculateDigest(
+                    keccak256(
+                        abi.encode(
+                            PERMIT_TYPEHASH,
+                            spender,
+                            tokenId,
+                            sigNonces[owner]++,
+                            sig.deadline
+                        )
+                    )
+                ),
+                owner,
+                sig
+            );
+        }
         _approve(spender, tokenId);
     }
 
@@ -69,22 +86,24 @@ abstract contract LensNFTBase is ILensNFTBase, ERC721Enumerable {
         DataTypes.EIP712Signature calldata sig
     ) external override {
         if (operator == address(0)) revert Errors.ZeroSpender();
-        _validateRecoveredAddress(
-            _calculateDigest(
-                keccak256(
-                    abi.encode(
-                        PERMIT_FOR_ALL_TYPEHASH,
-                        owner,
-                        operator,
-                        approved,
-                        sigNonces[owner]++,
-                        sig.deadline
+        unchecked {
+            _validateRecoveredAddress(
+                _calculateDigest(
+                    keccak256(
+                        abi.encode(
+                            PERMIT_FOR_ALL_TYPEHASH,
+                            owner,
+                            operator,
+                            approved,
+                            sigNonces[owner]++,
+                            sig.deadline
+                        )
                     )
-                )
-            ),
-            owner,
-            sig
-        );
+                ),
+                owner,
+                sig
+            );
+        }
         _setOperatorApproval(owner, operator, approved);
     }
 
@@ -106,16 +125,22 @@ abstract contract LensNFTBase is ILensNFTBase, ERC721Enumerable {
         override
     {
         address owner = ownerOf(tokenId);
-
-        _validateRecoveredAddress(
-            _calculateDigest(
-                keccak256(
-                    abi.encode(BURN_WITH_SIG_TYPEHASH, tokenId, sigNonces[owner]++, sig.deadline)
-                )
-            ),
-            owner,
-            sig
-        );
+        unchecked {
+            _validateRecoveredAddress(
+                _calculateDigest(
+                    keccak256(
+                        abi.encode(
+                            BURN_WITH_SIG_TYPEHASH,
+                            tokenId,
+                            sigNonces[owner]++,
+                            sig.deadline
+                        )
+                    )
+                ),
+                owner,
+                sig
+            );
+        }
         _burn(tokenId);
     }
 
@@ -125,7 +150,7 @@ abstract contract LensNFTBase is ILensNFTBase, ERC721Enumerable {
     function _validateRecoveredAddress(
         bytes32 digest,
         address expectedAddress,
-        DataTypes.EIP712Signature memory sig
+        DataTypes.EIP712Signature calldata sig
     ) internal view {
         if (sig.deadline < block.timestamp) revert Errors.SignatureExpired();
         address recoveredAddress = ecrecover(digest, sig.v, sig.r, sig.s);
@@ -154,7 +179,7 @@ abstract contract LensNFTBase is ILensNFTBase, ERC721Enumerable {
      *
      * @param hashedMessage The message hash from which the digest should be calculated.
      *
-     * @return A 32-byte output representing the EIP712 digest.
+     * @return bytes32 A 32-byte output representing the EIP712 digest.
      */
     function _calculateDigest(bytes32 hashedMessage) internal view returns (bytes32) {
         bytes32 digest;

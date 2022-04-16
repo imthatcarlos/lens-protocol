@@ -32,7 +32,7 @@ struct ProfileData {
  * @notice This is a simple Lens FollowModule implementation, inheriting from the IFollowModule interface, but with additional
  * variables that can be controlled by governance, such as the governance & treasury addresses as well as the treasury fee.
  */
-contract FeeFollowModule is IFollowModule, FeeModuleBase, FollowValidatorFollowModuleBase {
+contract FeeFollowModule is FeeModuleBase, FollowValidatorFollowModuleBase {
     using SafeERC20 for IERC20;
 
     mapping(uint256 => ProfileData) internal _dataByProfile;
@@ -42,12 +42,13 @@ contract FeeFollowModule is IFollowModule, FeeModuleBase, FollowValidatorFollowM
     /**
      * @notice This follow module levies a fee on follows.
      *
+     * @param profileId The profile ID of the profile to initialize this module for.
      * @param data The arbitrary data parameter, decoded into:
      *      address currency: The currency address, must be internally whitelisted.
      *      uint256 amount: The currency total amount to levy.
      *      address recipient: The custom recipient address to direct earnings to.
      *
-     * @return An abi encoded bytes parameter, which is the same as the passed data parameter.
+     * @return bytes An abi encoded bytes parameter, which is the same as the passed data parameter.
      */
     function initializeFollowModule(uint256 profileId, bytes calldata data)
         external
@@ -107,7 +108,7 @@ contract FeeFollowModule is IFollowModule, FeeModuleBase, FollowValidatorFollowM
      *
      * @param profileId The token ID of the profile to query.
      *
-     * @return The ProfileData struct mapped to that profile.
+     * @return ProfileData The ProfileData struct mapped to that profile.
      */
     function getProfileData(uint256 profileId) external view returns (ProfileData memory) {
         return _dataByProfile[profileId];

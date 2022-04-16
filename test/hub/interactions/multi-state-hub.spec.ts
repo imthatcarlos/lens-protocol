@@ -15,7 +15,7 @@ import {
   ProtocolState,
 } from '../../helpers/utils';
 import {
-  emptyCollectModule,
+  freeCollectModule,
   FIRST_PROFILE_ID,
   governance,
   lensHub,
@@ -27,6 +27,7 @@ import {
   testWallet,
   userAddress,
   userTwoAddress,
+  abiCoder,
 } from '../../__setup.spec';
 
 makeSuiteCleanRoom('Multi-State Hub', function () {
@@ -103,7 +104,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -123,7 +124,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.be.revertedWith(ERRORS.PAUSED);
@@ -138,7 +139,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -151,7 +152,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -178,7 +179,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -199,7 +200,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
           lensHub.setFollowModuleWithSig({
             profileId: FIRST_PROFILE_ID,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             sig: {
               v,
               r,
@@ -217,7 +218,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
           lensHub.setFollowModuleWithSig({
             profileId: FIRST_PROFILE_ID,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             sig: {
               v,
               r,
@@ -235,7 +236,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -260,7 +261,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -313,7 +314,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -338,7 +339,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -391,7 +392,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -416,7 +417,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -469,7 +470,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -477,17 +478,17 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
         await expect(lensHub.connect(governance).setState(ProtocolState.Paused)).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.be.revertedWith(ERRORS.PUBLISHING_PAUSED);
 
@@ -499,10 +500,10 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
           lensHub.post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
       });
@@ -514,7 +515,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -522,20 +523,20 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
         await expect(lensHub.connect(governance).setState(ProtocolState.Paused)).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         const nonce = (await lensHub.sigNonces(testWallet.address)).toNumber();
-        const collectModuleData = [];
+        const collectModuleInitData = abiCoder.encode(['bool'], [true]);
+        const referenceModuleInitData = [];
         const referenceModuleData = [];
-
         const { v, r, s } = await getPostWithSigParts(
           FIRST_PROFILE_ID,
           MOCK_URI,
-          emptyCollectModule.address,
-          collectModuleData,
+          freeCollectModule.address,
+          collectModuleInitData,
           ZERO_ADDRESS,
-          referenceModuleData,
+          referenceModuleInitData,
           nonce,
           MAX_UINT256
         );
@@ -544,10 +545,10 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
           lensHub.postWithSig({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: collectModuleData,
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: collectModuleInitData,
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: referenceModuleData,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -565,10 +566,10 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
           lensHub.postWithSig({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: collectModuleData,
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: collectModuleInitData,
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: referenceModuleData,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -586,23 +587,23 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
@@ -614,10 +615,11 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             contentURI: MOCK_URI,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: 1,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: [],
           })
         ).to.be.revertedWith(ERRORS.PUBLISHING_PAUSED);
 
@@ -631,10 +633,11 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             contentURI: MOCK_URI,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: 1,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
       });
@@ -646,30 +649,31 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.connect(testWallet).post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
         await expect(lensHub.connect(governance).setState(ProtocolState.Paused)).to.not.be.reverted;
 
         const nonce = (await lensHub.sigNonces(testWallet.address)).toNumber();
-        const collectModuleData = [];
+        const collectModuleInitData = abiCoder.encode(['bool'], [true]);
+        const referenceModuleInitData = [];
         const referenceModuleData = [];
 
         const { v, r, s } = await getCommentWithSigParts(
@@ -677,10 +681,11 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
           MOCK_URI,
           FIRST_PROFILE_ID,
           '1',
-          emptyCollectModule.address,
-          collectModuleData,
-          ZERO_ADDRESS,
           referenceModuleData,
+          freeCollectModule.address,
+          collectModuleInitData,
+          ZERO_ADDRESS,
+          referenceModuleInitData,
           nonce,
           MAX_UINT256
         );
@@ -691,10 +696,11 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             contentURI: MOCK_URI,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: '1',
-            collectModule: emptyCollectModule.address,
-            collectModuleData: collectModuleData,
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: referenceModuleData,
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: collectModuleInitData,
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -714,10 +720,11 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             contentURI: MOCK_URI,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: '1',
-            collectModule: emptyCollectModule.address,
-            collectModuleData: collectModuleData,
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: referenceModuleData,
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: collectModuleInitData,
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -735,23 +742,23 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
@@ -762,8 +769,9 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             profileId: FIRST_PROFILE_ID,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: 1,
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: [],
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: [],
           })
         ).to.be.revertedWith(ERRORS.PUBLISHING_PAUSED);
 
@@ -776,8 +784,9 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             profileId: FIRST_PROFILE_ID,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: 1,
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: [],
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
       });
@@ -789,37 +798,39 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.connect(testWallet).post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
         await expect(lensHub.connect(governance).setState(ProtocolState.Paused)).to.not.be.reverted;
 
         const nonce = (await lensHub.sigNonces(testWallet.address)).toNumber();
+        const referenceModuleInitData = [];
         const referenceModuleData = [];
 
         const { v, r, s } = await getMirrorWithSigParts(
           FIRST_PROFILE_ID,
           FIRST_PROFILE_ID,
           '1',
-          ZERO_ADDRESS,
           referenceModuleData,
+          ZERO_ADDRESS,
+          referenceModuleInitData,
           nonce,
           MAX_UINT256
         );
@@ -829,8 +840,9 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             profileId: FIRST_PROFILE_ID,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: '1',
+            referenceModuleData: [],
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: referenceModuleData,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -849,8 +861,9 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             profileId: FIRST_PROFILE_ID,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: '1',
+            referenceModuleData: [],
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: referenceModuleData,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -868,7 +881,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -891,7 +904,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -914,7 +927,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -970,23 +983,23 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
@@ -1010,23 +1023,23 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.connect(testWallet).post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
@@ -1096,7 +1109,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1109,7 +1122,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1130,7 +1143,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1153,7 +1166,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
           lensHub.setFollowModuleWithSig({
             profileId: FIRST_PROFILE_ID,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             sig: {
               v,
               r,
@@ -1171,7 +1184,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1190,7 +1203,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1228,7 +1241,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1247,7 +1260,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1285,7 +1298,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1295,17 +1308,17 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.be.revertedWith(ERRORS.PUBLISHING_PAUSED);
 
@@ -1317,10 +1330,10 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
           lensHub.post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
       });
@@ -1332,7 +1345,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1342,20 +1355,20 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         const nonce = (await lensHub.sigNonces(testWallet.address)).toNumber();
-        const collectModuleData = [];
+        const collectModuleInitData = abiCoder.encode(['bool'], [true]);
+        const referenceModuleInitData = [];
         const referenceModuleData = [];
-
         const { v, r, s } = await getPostWithSigParts(
           FIRST_PROFILE_ID,
           MOCK_URI,
-          emptyCollectModule.address,
-          collectModuleData,
+          freeCollectModule.address,
+          collectModuleInitData,
           ZERO_ADDRESS,
-          referenceModuleData,
+          referenceModuleInitData,
           nonce,
           MAX_UINT256
         );
@@ -1364,10 +1377,10 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
           lensHub.postWithSig({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: collectModuleData,
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: collectModuleInitData,
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: referenceModuleData,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -1385,10 +1398,10 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
           lensHub.postWithSig({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: collectModuleData,
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: collectModuleInitData,
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: referenceModuleData,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -1406,23 +1419,23 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
@@ -1436,10 +1449,11 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             contentURI: MOCK_URI,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: 1,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: [],
           })
         ).to.be.revertedWith(ERRORS.PUBLISHING_PAUSED);
 
@@ -1453,10 +1467,11 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             contentURI: MOCK_URI,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: 1,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
       });
@@ -1468,23 +1483,23 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.connect(testWallet).post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
@@ -1493,7 +1508,8 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
         ).to.not.be.reverted;
 
         const nonce = (await lensHub.sigNonces(testWallet.address)).toNumber();
-        const collectModuleData = [];
+        const collectModuleInitData = abiCoder.encode(['bool'], [true]);
+        const referenceModuleInitData = [];
         const referenceModuleData = [];
 
         const { v, r, s } = await getCommentWithSigParts(
@@ -1501,10 +1517,11 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
           MOCK_URI,
           FIRST_PROFILE_ID,
           '1',
-          emptyCollectModule.address,
-          collectModuleData,
-          ZERO_ADDRESS,
           referenceModuleData,
+          freeCollectModule.address,
+          collectModuleInitData,
+          ZERO_ADDRESS,
+          referenceModuleInitData,
           nonce,
           MAX_UINT256
         );
@@ -1515,10 +1532,11 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             contentURI: MOCK_URI,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: '1',
-            collectModule: emptyCollectModule.address,
-            collectModuleData: collectModuleData,
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: referenceModuleData,
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: collectModuleInitData,
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -1538,10 +1556,11 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             contentURI: MOCK_URI,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: '1',
-            collectModule: emptyCollectModule.address,
-            collectModuleData: collectModuleData,
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: referenceModuleData,
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: collectModuleInitData,
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -1559,23 +1578,23 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
@@ -1588,8 +1607,9 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             profileId: FIRST_PROFILE_ID,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: 1,
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: [],
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: [],
           })
         ).to.be.revertedWith(ERRORS.PUBLISHING_PAUSED);
 
@@ -1602,8 +1622,9 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             profileId: FIRST_PROFILE_ID,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: 1,
-            referenceModule: ZERO_ADDRESS,
             referenceModuleData: [],
+            referenceModule: ZERO_ADDRESS,
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
       });
@@ -1615,23 +1636,23 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.connect(testWallet).post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
@@ -1640,14 +1661,16 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
         ).to.not.be.reverted;
 
         const nonce = (await lensHub.sigNonces(testWallet.address)).toNumber();
+        const referenceModuleInitData = [];
         const referenceModuleData = [];
 
         const { v, r, s } = await getMirrorWithSigParts(
           FIRST_PROFILE_ID,
           FIRST_PROFILE_ID,
           '1',
-          ZERO_ADDRESS,
           referenceModuleData,
+          ZERO_ADDRESS,
+          referenceModuleInitData,
           nonce,
           MAX_UINT256
         );
@@ -1657,8 +1680,9 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             profileId: FIRST_PROFILE_ID,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: '1',
+            referenceModuleData: [],
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: referenceModuleData,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -1677,8 +1701,9 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             profileId: FIRST_PROFILE_ID,
             profileIdPointed: FIRST_PROFILE_ID,
             pubIdPointed: '1',
+            referenceModuleData: [],
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: referenceModuleData,
+            referenceModuleInitData: referenceModuleInitData,
             sig: {
               v,
               r,
@@ -1696,7 +1721,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1715,7 +1740,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1734,7 +1759,7 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
@@ -1774,23 +1799,23 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
@@ -1810,23 +1835,23 @@ makeSuiteCleanRoom('Multi-State Hub', function () {
             handle: MOCK_PROFILE_HANDLE,
             imageURI: MOCK_PROFILE_URI,
             followModule: ZERO_ADDRESS,
-            followModuleData: [],
+            followModuleInitData: [],
             followNFTURI: MOCK_FOLLOW_NFT_URI,
           })
         ).to.not.be.reverted;
 
         await expect(
-          lensHub.connect(governance).whitelistCollectModule(emptyCollectModule.address, true)
+          lensHub.connect(governance).whitelistCollectModule(freeCollectModule.address, true)
         ).to.not.be.reverted;
 
         await expect(
           lensHub.connect(testWallet).post({
             profileId: FIRST_PROFILE_ID,
             contentURI: MOCK_URI,
-            collectModule: emptyCollectModule.address,
-            collectModuleData: [],
+            collectModule: freeCollectModule.address,
+            collectModuleInitData: abiCoder.encode(['bool'], [true]),
             referenceModule: ZERO_ADDRESS,
-            referenceModuleData: [],
+            referenceModuleInitData: [],
           })
         ).to.not.be.reverted;
 
